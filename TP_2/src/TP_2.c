@@ -14,10 +14,9 @@
 #include <limits.h>
 #include <float.h>
 #include <string.h>
-#include "menu.h"
 #include "arrayEmployees.h"
 #include "validaciones.h"
-
+#include "menu.h"
 
 #define	COUNT_EMPLOYEES 1000
 
@@ -26,15 +25,12 @@ int main(void)
 	setbuf(stdout,NULL);
 	Employee auxEmployee;
 	Employee listEmployees[COUNT_EMPLOYEES];
-
-	int idRemove;
-	int indexRemove;
-	int idModify;
-
 	int optionMenu;
 	int optionReport;
 	int optionModify;
-
+	int idRemove;
+	int indexRemove;
+	int idModify;
 	int indexModify;
 	int order;
 	float accumulator;
@@ -42,20 +38,17 @@ int main(void)
 	int counter;
 	int flagPause = 0;
 
-
 	if(initEmployees(listEmployees, COUNT_EMPLOYEES) == 0)
 	{
 		do
 		{
 			if(flagPause)
 			{
-				system("PAUSE");
-				system("CLS");
+				system("pause");
+				system("cls");
 			}
 			showMenu(&optionMenu, &optionReport, &optionModify, listEmployees, COUNT_EMPLOYEES);
-
-
-			switch (optionMenu)
+				switch (optionMenu)
 				{
 					case 1:
 						if( requestDataEmployee(&auxEmployee) == 0 &&
@@ -67,7 +60,7 @@ int main(void)
 						break;
 					case 2:
 						if( printEmployees(listEmployees, COUNT_EMPLOYEES) == 0 &&
-							utn_getNumberInt(&idModify, "Ingrese id del empleado a dar de baja: ", "Error.\n", 1, INT_MAX, 2) == 0)
+							utn_getNumberInt(&idModify, "Ingrese el id del empleado que quiere dar de baja: ", "Error.\n", 1, INT_MAX, 2) == 0)
 						{
 							if( findEmployeeById(listEmployees, COUNT_EMPLOYEES, idModify, &indexModify) == 0 &&
 								modifyEmployee(listEmployees, COUNT_EMPLOYEES, auxEmployee, indexModify, optionModify) == 0)
@@ -82,7 +75,7 @@ int main(void)
 						break;
 					case 3:
 						if( printEmployees(listEmployees, COUNT_EMPLOYEES) == 0 &&
-							utn_getNumberInt(&idRemove, "Ingrese id del empleado a dar de baja: ", "Error.\n", 1, INT_MAX, 2) == 0)
+							utn_getNumberInt(&idRemove, "Ingrese el id del empleado que quiere dar de baja: ", "Error.\n", 1, INT_MAX, 2) == 0)
 						{
 							if( findEmployeeById(listEmployees, COUNT_EMPLOYEES, idRemove, &indexRemove) == 0 &&
 								removeEmployee(listEmployees, COUNT_EMPLOYEES, indexRemove) == 0)
@@ -102,15 +95,15 @@ int main(void)
 								if( utn_getNumberInt(&order, "Indiqué el orden de los empleados (1- Ascendente / 0- Descendente): ", "Error.\n", 0, 1, 2) == 0 &&
 									sortEmployeesByLastNameSector(listEmployees, COUNT_EMPLOYEES, order) == 0)
 								{
-									printf("Ordenado correctamente.\n");
+									printf("El listado fue ordenado correctamente.\n");
 									printEmployees(listEmployees, COUNT_EMPLOYEES);
 								}
 								break;
 							case 2:
-								if(AccumulateAverageSalary(listEmployees, COUNT_EMPLOYEES, &accumulator, &average) == 0 &&
+								if( AcumularPromediarSalario(listEmployees, COUNT_EMPLOYEES, &accumulator, &average) == 0 &&
 									calculateEmployeesOverAverageSalary(listEmployees, COUNT_EMPLOYEES, &counter, average) == 0)
 								{
-									printf("El total de salarios es: %f. El promedio de los salarios es: %f.\n", accumulator, average);
+									printf("El total de salarios es: %.2f. El promedio de los salarios es: %.2f.\n", accumulator, average);
 									printf("Hay %d empleados que ganan mas del salario promedio.\n", counter);
 								}
 								break;

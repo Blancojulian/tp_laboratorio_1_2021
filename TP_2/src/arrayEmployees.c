@@ -13,9 +13,32 @@
 #include "validaciones.h"
 
 static int generateNewId(void);
+/**
+ * \brief Inicializa el array de empleados.
+ * \param Employee list, Es el puntero al array de empleados.
+ * \param int len, es el limite de array.
+ * \return (-1) Error / (0) Ok
+ */
+int initEmployees(Employee* list, int len)
+{
+	int retorno = -1;
+	int i;
 
-
-
+	if (list != NULL && len > 0)
+	{
+		for (i = 0; i < len; i++)
+		{
+			list[i].isEmpty = 1;
+		}
+		retorno = 0;
+	}
+	return retorno;
+}
+/**
+ * \brief Solicita los datos del empleado al usuario.
+ * \param Employee* auxEmployee, Es el puntero al espacio de memoria.
+ * \return (-1) Error / (0) Ok
+ */
 int requestDataEmployee(Employee* auxEmployee)
 {
 	int retorno = -1;
@@ -23,10 +46,10 @@ int requestDataEmployee(Employee* auxEmployee)
 
 	if(auxEmployee != NULL)
 	{
-		if( utn_getString(auxiliarEmpleado.name, "Ingrese el nombre del empleado: ", "Error, nombre invalido.\n", 2, LONG_NAME - 1) == 0 &&
-			utn_getString(auxiliarEmpleado.lastName, "Ingrese el apellido del empleado: ", "Error, apellido invalido.\n", 2, LONG_LASTNAME- 1) == 0 &&
-			utn_getSalary(&auxiliarEmpleado.salary, "Ingrese el salario del empleado: ", "Error, salario invalido.\n", 1, FLT_MAX, 2) == 0 &&
-			utn_getNumberInt(&auxiliarEmpleado.sector, "Ingrese el sector del empleado (1 - 7): ", "Error, sector invalido.\n", 1, SECTOR_MAX, 2) == 0)
+		if( utn_getString(auxiliarEmpleado.name, "Ingrese el nombre del empleado: ", "Nombre invalido.\n", 2, LONG_NAME - 1) == 0 &&
+			utn_getString(auxiliarEmpleado.lastName, "Ingrese el apellido del empleado: ", "Apellido invalido.\n", 2, LONG_LASTNAME- 1) == 0 &&
+			utn_getSalary(&auxiliarEmpleado.salary, "Ingrese el salario del empleado: ", "Salario invalido.\n", 1, FLT_MAX, 2) == 0 &&
+			utn_getNumberInt(&auxiliarEmpleado.sector, "Ingrese el sector del empleado (1 - 7): ", "Sector invalido.\n", 1, SECTOR_MAX, 2) == 0)
 		{
 			*auxEmployee = auxiliarEmpleado;
 			retorno = 0;
@@ -38,27 +61,17 @@ int requestDataEmployee(Employee* auxEmployee)
 	}
 	return retorno;
 }
-
-
-
-
-int initEmployees(Employee* list, int len)
-{
-	int retorno = -1;
-	int i;
-
-	if (list != NULL && len > 0){
-		for (i = 0; i < len; i++)
-		{
-			list[i].isEmpty = 1;
-		}
-		retorno = 0;
-	}
-	return retorno;
-}
-
-
-
+/**
+ * \brief Realiza el alta de un empleado solo si el indice corresponde a un espacio vacio (isEmpty == 0)
+ * \param Employee* list, Es el puntero al array de empleados.
+ * \param int len, es el limite de array.
+ * \param int id, indica el id del empleado.
+ * \param char* name, indica el nombre del empleado.
+ * \param char* lastName, indica el apellido del empleado.
+ * \param float salary, indica el salario del empleado.
+ * \param int sector, indica el sector del empleado.
+ * \return (-1) Error / (0) Ok
+ */
 int addEmployees(Employee* list, int len, char* name, char* lastName, float salary, int sector)
 {
 	int retorno = -1;
@@ -83,31 +96,15 @@ int addEmployees(Employee* list, int len, char* name, char* lastName, float sala
 	}
 	return retorno;
 }
-
-
-
-int findEmployeeById(Employee* list, int len, int id, int* pIndex)
-{
-	int retorno = -1;
-	int i;
-
-	if (list != NULL && len > 0 && id > 0 && pIndex != NULL)
-	{
-		for (i = 0; i < len; i++)
-		{
-			if(list[i].isEmpty == 0 && list[i].id == id)
-			{
-				*pIndex = i;
-				retorno = 0;
-				break;
-			}
-		}
-	}
-	return retorno;
-}
-
-
-
+/**
+ * \brief Modifica datos de un empleados si el indice no está vacio.
+ * \param Employee* list, Es el puntero al array de empleados.
+ * \param int len, es el limite de array.
+ * \param Employee aux, recibe un dato del tipo Employee.
+ * \param int index, es el indice donde se cargara el empleados.
+ * \param int field, indica el campo que será modificado.
+ * \return (-1) Error / (0) Ok
+ */
 int modifyEmployee(Employee* list, int len, Employee aux, int index, int field)
 {
 	int retorno = -1;
@@ -127,10 +124,40 @@ int modifyEmployee(Employee* list, int len, Employee aux, int index, int field)
 	}
 	return retorno;
 }
+/**
+ * \brief Busca el empleado por id y se guarda su indice en un puntero.
+ * \param Employee list, Es el puntero al array de empleados.
+ * \param int len, es el limite de array.
+ * \param int id, id que será buscado.
+ * \param int* pIndex, puntero al espacio de memoria.
+ * \return Retorna el indice
+ */
+int findEmployeeById(Employee* list, int len, int id, int* pIndex)
+{
+	int retorno = -1;
+	int i;
 
-
-
-
+	if (list != NULL && len > 0 && id > 0 && pIndex != NULL)
+	{
+		for (i = 0; i < len; i++)
+		{
+			if(list[i].isEmpty == 0 && list[i].id == id)
+			{
+				*pIndex = i;
+				retorno = 0;
+				break;
+			}
+		}
+	}
+	return retorno;
+}
+/**
+ * \brief Modifica datos de un empleado si el indice no está vacio.
+ * \param Employee* list, Es el puntero al array de empleados.
+ * \param int len, es el limite de array.
+ * \param int index, es el indice donde se cargara el empleado.
+ * \return (-1) Error / (0) Ok
+ */
 int removeEmployee(Employee* list, int len, int index)
 {
 	int retorno = -1;
@@ -142,80 +169,13 @@ int removeEmployee(Employee* list, int len, int index)
 	}
 	return retorno;
 }
-
-
-
-
-int printEmployees(Employee* list, int len)
-{
-	int retorno = -1;
-	int i;
-
-	if(list != NULL && len > 0){
-
-		for (i = 0; i < len; i++)
-		{
-			if(list[i].isEmpty == 0)
-			{
-				printf( "Id: %d - Nombre: %s - Apellido: %s - Salario: %.2f - Sector: %d.\n"
-						,list[i].id , list[i].name, list[i].lastName, list[i].salary, list[i].sector);
-			}
-		}
-		retorno = 0;
-	}
-	return retorno;
-}
-
-
-
-
-
-int searchFreePlaceEmployee(Employee* list, int len, int* pIndex)
-{
-	int retorno = -1;
-	int i;
-
-	if (list != NULL && len > 0 && pIndex!= NULL)
-	{
-		for (i = 0; i < len; i++)
-		{
-			if(list[i].isEmpty == 1)
-			{
-				*pIndex = i;
-				retorno = 0;
-				break;
-			}
-		}
-	}
-	return retorno;
-}
-
-
-
-
-
-int searchOccupiedPlaceEmployee(Employee* list, int len)
-{
-	int retorno = -1;
-	int i;
-
-	if (list != NULL && len > 0)
-	{
-		for (i = 0; i < len; i++)
-		{
-			if(list[i].isEmpty == 0)
-			{
-				retorno = 0;
-				break;
-			}
-		}
-	}
-	return retorno;
-}
-
-
-
-
+/*
+ * \ brief - Ordena array de alumnos por nombre.
+ * \ param - Employee* list, recibe el array a utilizar.
+ * \ param - int len, indica la longitud del array.
+ * \ param - int order, indica el orden de los elementos. 1 en caso de ascendente y 0 en caso de descendente.
+ * \ return - (-1) en caso de error / (0) en caso de funcionar.
+ */
 int sortEmployeesByLastNameSector(Employee* list, int len, int order)
 {
 	int retorno = -1;
@@ -250,11 +210,91 @@ int sortEmployeesByLastNameSector(Employee* list, int len, int order)
 	}
 	return retorno;
 }
+/**
+ * \brief Imprime los empleados cargados.
+ * \param Employee* list, Es el puntero al array de empleados.
+ * \param int len, es el limite de array
+ * \return (-1) Error / (0) Ok
+ */
+int printEmployees(Employee* list, int len)
+{
+	int retorno = -1;
+	int i;
 
+	if(list != NULL && len > 0)
+	{
+		for (i = 0; i < len; i++)
+		{
+			if(list[i].isEmpty == 0)
+			{
+				printf( "Id: %d - Nombre: %s - Apellido: %s - Salario: %.2f - Sector: %d.\n"
+						,list[i].id , list[i].name, list[i].lastName, list[i].salary, list[i].sector);
+			}
+		}
+		retorno = 0;
+	}
+	return retorno;
+}
+/**
+ * \brief Busca un espacio libre en el array de empleados.
+ * \param Employee* list, Es el puntero al array de empleados.
+ * \param int len, es el limite de array.
+ * \param int* pIndex, puntero al espacio de memoria.
+ * \return (-1) Error / (0) Ok
+ */
+int searchFreePlaceEmployee(Employee* list, int len, int* pIndex)
+{
+	int retorno = -1;
+	int i;
 
+	if (list != NULL && len > 0 && pIndex!= NULL)
+	{
+		for (i = 0; i < len; i++)
+		{
+			if(list[i].isEmpty == 1)
+			{
+				*pIndex = i;
+				retorno = 0;
+				break;
+			}
+		}
+	}
+	return retorno;
+}
+/**
+ * \brief Busca un espacio ocupado en el array de empleados.
+ * \param Employee* list, Es el puntero al array de empleados.
+ * \param int len, es el limite de array.
+ * \param int* pIndex, puntero al espacio de memoria.
+ * \return (-1) Error / (0) Ok
+ */
+int searchOccupiedPlaceEmployee(Employee* list, int len)
+{
+	int retorno = -1;
+	int i;
 
-
-int AccumulateAverageSalary(Employee* list, int len, float* pAccumulator, float* pAverage)
+	if (list != NULL && len > 0)
+	{
+		for (i = 0; i < len; i++)
+		{
+			if(list[i].isEmpty == 0)
+			{
+				retorno = 0;
+				break;
+			}
+		}
+	}
+	return retorno;
+}
+/**
+ * \brief Acumula salario total, calcula el promedio y devuelve ambos como valores.
+ * \param Employee* list, Es el puntero al array de empleados.
+ * \param int len, es el limite de array.
+ * \param float* pAccumulator, puntero a espacio de memoria.
+ * \param float* pAverage, puntero a espacio de memoria.
+ * \return (-1) Error / (0) Ok
+ */
+int AcumularPromediarSalario(Employee* list, int len, float* pAccumulator, float* pAverage)
 {
 	int retorno = -1;
 	int i;
@@ -277,11 +317,14 @@ int AccumulateAverageSalary(Employee* list, int len, float* pAccumulator, float*
 	}
 	return retorno;
 }
-
-
-
-
-
+/**
+ * \brief Calcula la cantidad de empleados que estan sobre el salario promedio.
+ * \param Employee* list, Es el puntero al array de empleados.
+ * \param int len, es el limite de array.
+ * \param int* pAccumulator, puntero a espacio de memoria.
+ * \param float average, recibe el dato del salario promedio.
+ * \return (-1) Error / (0) Ok
+ */
 int calculateEmployeesOverAverageSalary(Employee* list, int len, int* pCounter, float average)
 {
 	int retorno = -1;
@@ -302,10 +345,10 @@ int calculateEmployeesOverAverageSalary(Employee* list, int len, int* pCounter, 
 	}
 	return retorno;
 }
-
-
-
-
+/**
+ * \brief Incrementa el id y lo retorna.
+ * \return Retorna el id
+ */
 static int generateNewId(void)
 {
 	static int id = 0;
